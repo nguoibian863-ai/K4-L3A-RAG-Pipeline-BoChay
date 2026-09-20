@@ -17,42 +17,38 @@ reports/2A202602900-PhamQuangHuy.md
 
 | Module/deliverable | Việc tôi trực tiếp làm | File/commit/PR | Trạng thái |
 |---|---|---|---|
-| Task 7 — Reranking với Reciprocal Rank Fusion (RRF) | Triển khai thuật toán RRF theo công thức chuẩn $RRF(d) = \sum \frac{1}{k + rank}$ (rank bắt đầu từ 1, $k=60$). Gộp 2 bảng xếp hạng dense và BM25, bảo tồn metadata, gán `retrieval_method="hybrid"`, sắp xếp giảm dần theo điểm RRF. | `src/task7_reranking.py`, commit `4fd3c33` | Done |
-| Task 8 — PageIndex Vectorless Fallback | Thiết kế module fallback vectorless với PageIndex. Xử lý bọc lỗi `try...except` an toàn tuyệt đối, đảm bảo khi provider gặp sự cố mạng hoặc hết hạn ngạch API thì hệ thống không crash mà an toàn rơi về hybrid results. | `src/task8_pageindex_vectorless.py`, commit `4fd3c33` | Done |
-| Task 9 — Retrieval Pipeline & Threshold Calibration | Tích hợp toàn bộ luồng `retrieve()`: gọi dense + BM25, gọi `rerank_rrf()` đúng duy nhất 1 lần, so sánh ngưỡng fallback với cosine score gốc của dense (`dense[0]["score"]`). Calibrate `SCORE_THRESHOLD = 0.40` trên câu hỏi in-domain và out-of-domain. | `src/task9_retrieval_pipeline.py`, `group_project/evaluation/RESULT.md`, commit `f6167b2` | Done |
-| Task 4 — Pipeline Indexing vào ChromaDB | Chạy và giám sát quá trình chunking (1,213 chunks), embedding bằng mô hình `BAAI/bge-m3` và lưu trữ toàn bộ vector vào cơ sở dữ liệu `chroma_db/` (cosine distance). | `src/task4_chunking_indexing.py`, `chroma_db/` | Done |
-| Contract Testing & Quality Gate (Tasks 7–9) | Viết và chạy kiểm thử hợp đồng cho RRF, Fallback, tính duy nhất của RRF và khả năng sống sót khi provider lỗi. Đạt 100% test pass. | `tests/test_contracts.py` (4/4 passed), `tests/test_acceptance.py` (5/5 passed) | Done |
+| Task 7 — Reranking với Reciprocal Rank Fusion (RRF) | Cài đặt thuật toán Reciprocal Rank Fusion theo công thức chuẩn $RRF(d) = \sum \frac{1}{k + rank}$ (với $k=60$, $rank \ge 1$). Hợp nhất các danh sách xếp hạng từ Dense và BM25 search, khử trùng lặp theo `id`, tính tổng điểm phân rã, bảo toàn metadata, chuẩn hóa `retrieval_method="hybrid"` và sắp xếp giảm dần để trả về top_k kết quả. | `src/task7_reranking.py`, commit `4251cc1` | Done |
+| Task 8 — PageIndex Vectorless Fallback | Thiết kế và hiện thực module fallback tìm kiếm vectorless với PageIndex. Xây dựng hàm `upload_documents()` quản lý tải tài liệu và lưu cache ID (`data/pageindex_cache.json`), hàm `pageindex_search()` truy vấn vectorless fallback. Xử lý bọc lỗi `try...except` và kiểm tra `PAGEINDEX_API_KEY`, đảm bảo hệ thống không crash khi thiếu key hoặc provider gặp sự cố mạng, duy trì chuẩn đầu ra `SearchResult` với `retrieval_method="pageindex"`. | `src/task8_pageindex_vectorless.py`, commit `4251cc1` | Done |
+| Contract Testing & Quality Gate (Tasks 7 & 8) | Kiểm thử đảm bảo module Task 7 và Task 8 tuân thủ chặt chẽ contract hệ thống: xác thực công thức RRF tính đúng theo thứ vị, kiểm tra tính toàn vẹn chữ ký hàm (`rerank_rrf`, `pageindex_search`) và khả năng chịu lỗi (graceful degradation) của module fallback khi có sự cố. | `tests/test_contracts.py` (`test_rrf_uses_rank_deduplicates_and_marks_hybrid`, `test_public_function_signatures_are_stable`) | Done |
 
 ## Quyết định kỹ thuật quan trọng
 
-1. **Quyết định:** Sử dụng cosine similarity gốc của dense search (`dense[0]["score"]`) làm tiêu chí kích hoạt fallback thay vì dùng điểm số sau RRF.  
-   **Lý do/evidence:** Điểm số RRF là hàm nghịch đảo thứ hạng $1/(k + rank)$ mang tính chất phân vị tương đối và giá trị luôn rất nhỏ ($\approx 0.01 - 0.03$), không phản ánh được mức độ tương đồng ngữ nghĩa thực sự với câu truy vấn. Trong khi đó, cosine score gốc ($0.0 - 1.0$) phân biệt rất rõ nét giữa câu hỏi đúng domain ($\approx 0.65 - 0.85$) và câu hỏi ngoài domain ($< 0.30$). Việc so sánh với cosine gốc giúp hệ thống đưa ra quyết định fallback chính xác tuyệt đối.  
-   **Trade-off:** Cần lưu giữ và truyền giá trị cosine score ban đầu song song với quá trình tính toán RRF, tăng nhẹ kích thước dữ liệu xử lý trong bộ nhớ nhưng đổi lại là logic phân luồng chuẩn xác 100%.
+1. **Quyết định:** Sử dụng thuật toán Reciprocal Rank Fusion (RRF) dựa trên thứ hạng vị trí với hệ số làm mượt $k=60$ để hợp nhất Dense và BM25 thay vì dùng chuẩn hóa điểm số tuyến tính (Score Normalization / Min-Max Scaler).  
+   **Lý do/evidence:** Điểm số của Dense Search (Cosine Similarity trong đoạn $[0, 1]$) và BM25 Search (điểm số lexical không bị chặn trên $[0, +\infty)$, biến thiên mạnh theo độ dài tài liệu và tần suất từ) có bản chất toán học và phân phối hoàn toàn khác nhau. Việc chuẩn hóa trực tiếp (Min-Max hoặc Z-score) rất dễ bị méo mó bởi các giá trị ngoại lai (outliers) hoặc các câu truy vấn có độ dài không đồng đều. RRF giải quyết triệt để vấn đề này bằng cách quy đổi hoàn toàn điểm số thành thứ vị ($rank$), áp dụng hàm nghịch đảo $1/(k + rank)$ giúp dung hòa khách quan 2 bảng xếp hạng mà không phụ thuộc vào phân phối điểm số tuyệt đối.  
+   **Trade-off:** Phương pháp RRF thuần túy bỏ qua biên độ chênh lệch điểm số thực tế giữa các thứ hạng liền kề (ví dụ: rank 1 có độ tự tin vượt trội hơn rank 2 thì khoảng cách RRF vẫn là cố định theo vị trí). Tuy nhiên, trade-off này hoàn toàn xứng đáng vì mang lại độ ổn định cao (robustness) và không đòi hỏi tinh chỉnh trọng số thủ công cho từng loại câu hỏi.
 
-2. **Quyết định:** Triển khai cơ chế Fail-Safe Resilient Fallback bọc kín `try...except` quanh `pageindex_search()`.  
-   **Lý do/evidence:** PageIndex là dịch vụ API đám mây bên thứ ba có thể bị nghẽn mạng, timeout hoặc hết hạn ngạch truy vấn. Nếu để exception ném ra ngoài, toàn bộ ứng dụng chatbot Streamlit sẽ bị crash và ngắt quãng trải nghiệm người dùng. Khi bắt lỗi và rơi về hybrid, hệ thống duy trì được tính sẵn sàng cao (High Availability).  
-   **Trade-off:** Trong tình huống API PageIndex bị lỗi, người dùng nhận được câu trả lời từ tài liệu có sẵn trong hệ thống (dù độ liên quan có thể thấp hơn) thay vì nhận thông báo lỗi hệ thống, nhưng đảm bảo giao diện luôn phản hồi liền mạch.
+2. **Quyết định:** Thiết kế cơ chế Graceful Degradation & Fail-Safe Resilient Fallback bọc kín `try...except` quanh `pageindex_search()` và kiểm tra an toàn biến môi trường `PAGEINDEX_API_KEY`.  
+   **Lý do/evidence:** PageIndex là một dịch vụ tìm kiếm vectorless đám mây bên thứ ba, phụ thuộc vào kết nối mạng bên ngoài, độ trễ và quota hạn mức của API key. Trong một kiến trúc RAG tích hợp nhóm, module fallback tuyệt đối không được phép trở thành điểm gây nghẽn chết (single point of failure). Bằng cách bọc try-except bắt toàn bộ ngoại lệ và chủ động kiểm tra guard clause khi thiếu key, module luôn trả về kết quả rỗng `[]` an toàn kèm log cảnh báo, cho phép luồng retrieval của nhóm hạ cấp một cách êm thuận (graceful fallback) mà không làm sập (crash) giao diện Chatbot Streamlit của người dùng cuối.  
+   **Trade-off:** Khi API PageIndex gặp sự cố hoặc người dùng chưa cấu hình API key, chatbot sẽ không hiển thị thông báo lỗi hệ thống mà tận dụng kết quả tìm kiếm sẵn có trong kho tài liệu nội bộ; điều này có thể dẫn đến việc câu trả lời cho các câu hỏi ngoài phạm vi hẹp hơn, nhưng đổi lại hệ thống luôn đạt độ sẵn sàng cao (High Availability) và trải nghiệm không bị gián đoạn.
 
 ## Kiểm thử và kết quả
 
 - Test hoặc query tôi đã dùng:
-  - Kiểm thử unit & demo Task 7: `python -m src.task7_reranking`
-  - Kiểm thử hợp đồng RRF và Pipeline: `python -m pytest tests/test_contracts.py -k "rrf or retrieve" -v`
-  - Kiểm thử toàn bộ tiêu chí chấp nhận: `python -m pytest tests/test_acceptance.py -v`
-  - Query hiệu chuẩn ngưỡng:
-    - In-domain: *"What are the 4 assessment criteria for IELTS Writing Task 1?"* $\rightarrow$ dense score $\approx 0.72 \ge 0.40$ (sử dụng hybrid kết hợp).
-    - Out-of-domain: *"Công thức nấu phở bò Hà Nội truyền thống"* $\rightarrow$ dense score $\approx 0.24 < 0.40$ (kích hoạt fallback PageIndex).
+  - Kiểm thử trực tiếp thuật toán và kết quả gộp RRF: `python -m src.task7_reranking`
+  - Kiểm thử cơ chế khởi tạo và bắt lỗi an toàn của PageIndex: `python -m src.task8_pageindex_vectorless`
+  - Kiểm thử hợp đồng cho Task 7: `python -m pytest tests/test_contracts.py -k "rrf" -v`
+  - Kiểm thử tính toàn vẹn và khử trùng lặp: `python -m pytest tests/test_contracts.py -k "test_rrf_uses_rank_deduplicates_and_marks_hybrid" -v`
 - Kết quả trước/sau nếu có:
-  - Trước: Module `task7_reranking.py` và `task9_retrieval_pipeline.py` ném lỗi `NotImplementedError`, các bài test hợp đồng `test_rrf_uses_rank_deduplicates_and_marks_hybrid`, `test_retrieve_uses_dense_score_for_fallback`, `test_retrieve_fuses_once_when_dense_is_confident`, `test_retrieve_survives_fallback_provider_error` đều thất bại.
-  - Sau: Toàn bộ 4 test contracts liên quan đều PASSED 100%. Điểm RRF tính toán khớp chính xác công thức toán học (`1/62 + 1/61`), `rerank_rrf` được gọi duy nhất 1 lần, fallback an toàn tuyệt đối.
+  - Trước: Module `src/task7_reranking.py` chưa triển khai logic tính toán RRF; `src/task8_pageindex_vectorless.py` chưa có cấu trúc xử lý lỗi và fallback an toàn; test `test_rrf_uses_rank_deduplicates_and_marks_hybrid` không đạt.
+  - Sau: Bài test `test_rrf_uses_rank_deduplicates_and_marks_hybrid` PASSED 100%. Điểm số RRF tính toán khớp chính xác công thức toán học ($1/(60+1) + 1/(60+2) \approx 0.032522$), metadata của tài liệu được bảo toàn nguyên vẹn, thuộc tính `retrieval_method` được gán chuẩn `"hybrid"`. Module PageIndex an toàn khi thiếu key hoặc gặp lỗi ngoại lệ, in log thông báo rõ ràng mà không làm gián đoạn chương trình.
 - Lỗi đã phát hiện và cách xử lý:
-  - Phát hiện nguy cơ lặp lại tính toán RRF nhiều lần nếu luồng fallback không được bố trí hợp lý: Đã thiết kế cấu trúc luồng tuần tự: dense + BM25 $\rightarrow$ gọi `rerank_rrf()` 1 lần $\rightarrow$ kiểm tra cosine gốc $\rightarrow$ fallback nếu cần.
-  - Phát hiện xung đột kiểu dữ liệu score giữa BM25 (thang điểm không giới hạn) và dense (thang điểm 0–1): RRF đã giải quyết triệt để vấn đề này bằng cách chỉ xếp hạng vị trí (rank) thay vì cộng gộp điểm số trực tiếp.
+  - Xử lý trùng lặp văn bản giữa hai luồng tìm kiếm: Khi một chunk xuất hiện đồng thời trong cả Dense search và BM25 search, nếu chỉ append đơn thuần sẽ gây trùng lặp và sai lệch số lượng top_k. Đã xử lý bằng cách dùng từ điển `scores` để cộng dồn điểm RRF $1/(k + rank)$ và từ điển `items` để lưu trữ object document, sau đó sắp xếp giảm dần theo điểm tích lũy trước khi trích xuất top_k.
+  - Xử lý thiếu `PAGEINDEX_API_KEY`: Thêm kiểm tra điều kiện ngay đầu hàm, nếu không có key sẽ log cảnh báo và return ngay danh sách rỗng `[]`, tránh phát sinh request lỗi hoặc gây timeout kết nối.
 
 ## Điều còn hạn chế
 
-- Một hạn chế cụ thể của phần tôi làm: Hằng số làm mượt $k=60$ trong công thức RRF hiện đang được đặt cố định cho mọi loại truy vấn, chưa tự động điều chỉnh linh hoạt theo độ dài câu hỏi (ví dụ: câu hỏi từ khóa ngắn vs câu hỏi ngữ cảnh dài).
-- Nếu có thêm thời gian, thay đổi đầu tiên tôi sẽ thực hiện: Triển khai Weighted RRF kết hợp cơ chế phân loại truy vấn (Query Classifier), cho phép ưu tiên trọng số BM25 cho các truy vấn tra cứu định danh/con số chính xác và ưu tiên dense search cho các câu hỏi suy luận ngữ nghĩa mở rộng.
+- Một hạn chế cụ thể của phần tôi làm: Hằng số làm mượt $k=60$ trong RRF đang được đặt cố định và tỷ lệ trọng số giữa Dense và BM25 đang là 1:1, chưa cho phép tùy chỉnh trọng số theo đặc thù câu hỏi (ví dụ: câu hỏi tra cứu từ khóa chính xác vs câu hỏi ngữ nghĩa khái niệm mở rộng); Module PageIndex hiện mới dừng ở mức cấu trúc API fallback và xử lý an toàn lỗi kết nối, chưa tích hợp deep document parsing SDK nâng cao.
+- Nếu có thêm thời gian, thay đổi đầu tiên tôi sẽ thực hiện: Triển khai Weighted RRF ($\alpha \cdot RRF_{dense} + (1-\alpha) \cdot RRF_{bm25}$) kết hợp bộ phân loại câu hỏi (Query Classifier) để tự động điều chỉnh tỷ trọng $\alpha$ linh hoạt theo từng loại câu truy vấn, đồng thời hoàn thiện cơ chế background index sync cho PageIndex cache.
 
 ## Xác nhận đóng góp
 
