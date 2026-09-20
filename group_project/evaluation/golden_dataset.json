@@ -1,0 +1,77 @@
+[
+  {
+    "question": "Theo chuyên gia Hội đồng Anh, thí sinh cần dành tối thiểu bao nhiêu thời gian để chuẩn bị trước khi viết bài IELTS Writing?",
+    "expected_answer": "Thí sinh cần tối thiểu 5 phút để phân tích câu hỏi, lọc ý tưởng và sắp xếp thứ tự trình bày trước khi viết nhằm tăng tốc độ viết và có thời gian trau chuốt từ vựng, ngữ pháp.",
+    "expected_context": "Thí sinh cần tối thiểu 5 phút để phân tích câu hỏi, lọc ý tưởng và sắp xếp thứ tự trình bày. Chuẩn bị càng kỹ, tốc độ viết càng nhanh và bạn sẽ có thêm thời gian để trau chuốt từ vựng, ngữ pháp, ông Milner nhấn mạnh."
+  },
+  {
+    "question": "Mô hình TREE trong IELTS Speaking Part 3 là gì và các chữ cái đại diện cho điều gì?",
+    "expected_answer": "Mô hình TREE là từ khóa giúp trả lời mạch lạc, trong đó T tương ứng Topic (luận điểm chính), R là Reasoning (lý do), theo sau là Evidence (bằng chứng) hoặc/và Example (ví dụ).",
+    "expected_context": "Từ khóa cần nhớ để trả lời mạch lạc là TREE(cái cây), trong đó T tương ứng Topic (luận điểm chính), R là Reasoning (lý do), theo sau là Evidence (bằng chứng) hoặc/và Example (ví dụ)."
+  },
+  {
+    "question": "Theo quy định của Bộ Giáo dục và Đào tạo, thí sinh có chứng chỉ IELTS được cộng tối đa bao nhiêu điểm khi xét tuyển đại học?",
+    "expected_answer": "Thí sinh có chứng chỉ IELTS được cộng tối đa 1,5 điểm, quy đổi theo tối thiểu 5 mức chênh lệch theo quy định của Bộ Giáo dục và Đào tạo.",
+    "expected_context": "Hiện, chứng chỉ IELTS được nhiều trường đại học tại Việt Nam sử dụng trong tuyển sinh. Thí sinh có chứng chỉ này được cộng tối đa 1,5 điểm, quy đổi theo tối thiểu 5 mức chênh lệch, theo quy định của Bộ Giáo dục và Đào tạo."
+  },
+  {
+    "question": "Mô hình L.I.M Framework của The IELTS Workshop gồm những bước nào?",
+    "expected_answer": "Mô hình L.I.M Framework gồm 3 bước: Learn (tiếp thu tư duy nền tảng, ngữ pháp, logic), Inquire (phản tư qua tương tác, thảo luận phản biện) và Master (thành thạo vận dụng kỹ năng vào bài thi và đời sống).",
+    "expected_context": "L.I.M Framework của The IELTS Workshop gồm ba bước Learn (tiếp thu), Inquire (phản tư) và Master (thành thạo), hướng người học vận dụng tiếng Anh chủ động."
+  },
+  {
+    "question": "The IELTS Workshop đưa những loại authentic materials nào vào giảng dạy trong L.I.M Framework?",
+    "expected_answer": "TIW đưa các ngữ liệu thực tế (authentic materials) bao gồm bài báo thời sự quốc tế, podcast, infographic, video khoa học và đời sống.",
+    "expected_context": "Từ cách tiếp cận này, TIW đưa authentic materials (ngữ liệu thực tế) vào quá trình giảng dạy, gồm bài báo thời sự quốc tế, podcast, infographic, video khoa học và đời sống. Các tài liệu giúp học viên tiếp xúc với tiếng Anh trong nhiều bối cảnh thay vì chỉ giới hạn ở bộ đề luyện thi."
+  },
+  {
+    "question": "Điểm thi IELTS trung bình của thí sinh Việt Nam là bao nhiêu và tỷ lệ người đạt từ 8.0 trở lên là bao nhiêu?",
+    "expected_answer": "Điểm thi trung bình của người thi Việt Nam là 6.2, và chỉ có khoảng 5% người thi đạt từ mốc 8.0 trở lên.",
+    "expected_context": "Thống kê trên trang chủ IELTS cho thấy điểm thi trung bình của người thi Việt Nam là 6.2. Từ mốc 8.0 trở lên, chỉ 5% người thi đạt được. Ngoài ra, theo các thông tin được công bố, số đạt điểm tuyệt đối ở Việt Nam từ trước đến nay khoảng 20 người."
+  },
+  {
+    "question": "Trong bài thi IELTS Writing đạt 8.0, thí sinh Quốc Khải đã nhận định như thế nào về xu hướng giao tiếp qua mạng?",
+    "expected_answer": "Quốc Khải nhận định giao tiếp qua mạng dần thay thế giao tiếp trực tiếp là diễn biến tiêu cực, dễ dẫn đến nguy cơ lừa đảo và bạo lực mạng, dẫn chứng từ các cuộc gọi và tin nhắn giả danh công an.",
+    "expected_context": "Khải nhận định đây là diễn biến tiêu cực, dễ dẫn đến nguy cơ lừa đảo và bạo lực mạng. Anh dẫn chứng thực tế từ các cuộc gọi, tin nhắn giả danh công an lừa đảo xuất hiện gần đây."
+  },
+  {
+    "question": "Kết quả bài thi SAT có giá trị trong bao lâu và thí sinh có thể dự thi vào những tháng nào trong năm?",
+    "expected_answer": "Kết quả bài thi SAT có giá trị trong vòng 5 năm, và thí sinh có thể dự thi nhiều đợt vào các tháng 3, 5, 6, 8, 10, 11 và 12.",
+    "expected_context": "SAT đem đến cho thí sinh lợi thế khi cho phép dự thi nhiều đợt vào các tháng 3, 5, 6, 8, 10, 11 và 12, được sử dụng kết quả cao nhất để nộp hồ sơ... Kết quả SAT cũng có giá trị trong vòng 5 năm."
+  },
+  {
+    "question": "Mức điểm SAT nào thường giúp thí sinh đáp ứng yêu cầu đầu vào và tăng cơ hội nhận học bổng du học Mỹ theo American Study?",
+    "expected_answer": "Mức điểm SAT từ 1.450 trở lên có thể giúp thí sinh đáp ứng yêu cầu đầu vào và tăng cơ hội tiếp cận các gói học bổng tại Mỹ, Canada và Australia.",
+    "expected_context": "Theo đại diện American Study, đơn vị tư vấn du học Mỹ, mức điểm 1.450 trở lên có thể giúp thí sinh đáp ứng yêu cầu đầu vào và tăng cơ hội tiếp cận các gói học bổng."
+  },
+  {
+    "question": "Cơ chế thi thích ứng (adaptive testing) mới của bài thi TOEFL hoạt động như thế nào?",
+    "expected_answer": "Mô hình adaptive testing giữ nguyên số lượng câu hỏi, độ dài và thời gian tổng thể, nhưng các câu hỏi phần Đọc và Nghe được điều chỉnh độ khó theo năng lực thí sinh dựa trên kết quả chấm điểm nhanh của AI.",
+    "expected_context": "Cụ thể, với mô hình thi thích ứng (adaptive testing), đề thi của tất cả thí sinh vẫn giữ nguyên số lượng câu hỏi, độ dài và thời gian tổng thể. Tuy nhiên, các câu hỏi phần Đọc và Nghe sẽ được điều chỉnh độ khó dựa trên kết quả chấm điểm nhanh của AI cho các phần thi trước."
+  },
+  {
+    "question": "Bài thi TOEFL iBT kéo dài bao nhiêu phút và đánh giá những kỹ năng nào?",
+    "expected_answer": "Bài thi TOEFL iBT kéo dài 116 phút và đánh giá 4 kỹ năng: Nghe, Nói, Đọc, Viết.",
+    "expected_context": "Bài thi đánh giá người sử dụng tiếng Anh ở 4 kỹ năng Nghe, Nói, Đọc, Viết với 116 phút. Phần Đọc yêu cầu trả lời 20 câu hỏi, Nghe 28 câu. Phần Nói có bốn câu, yêu cầu thí sinh bày tỏ quan điểm và trả lời dựa câu hỏi vào thông tin bài Đọc và Nghe. Kỹ năng Viết tương tự với hai câu."
+  },
+  {
+    "question": "Trong IELTS Writing, hai phần bắt buộc phải có lần lượt đối với Task 1 và Task 2 là gì?",
+    "expected_answer": "Task 1 bắt buộc phải có phần tổng quan (overview), còn Task 2 không được thiếu phần kết luận (conclusion).",
+    "expected_context": "trong khi Task 2 không được thiếu phần kết luận (conclusion), thì Task 1 bắt buộc có phần tổng quan (overview)."
+  },
+  {
+    "question": "Trong IELTS Writing Task 1 dạng mô tả biểu đồ số liệu, thí sinh cần tránh điều gì theo hướng dẫn chuyên môn?",
+    "expected_answer": "Thí sinh cần tránh tự đưa ra lời giải thích hoặc nhận xét cá nhân về số liệu, chỉ cần tóm tắt số liệu có sẵn theo cấu trúc đơn giản.",
+    "expected_context": "Với bài Task 1 (Mô tả biểu đồ), chỉ yêu cầu tóm tắt số liệu có sẵn. ông Milner lưu ý thí sinh tránh tự đưa ra lời giải thích hoặc nhận xét cá nhân về số liệu. Cùng đó, họ cần nắm rõ các từ vựng mô tả bảng biểu, con số và viết theo một cấu trúc đơn giản."
+  },
+  {
+    "question": "Trong bài mẫu phân tích thay đổi dân số New York từ thế kỷ 19 đến 21, dân số New York đã thay đổi như thế nào sau 200 năm?",
+    "expected_answer": "Dân số New York bùng nổ sau 200 năm từ khoảng 79 nghìn người vào năm 1800 lên 3.4 triệu rồi tiếp tục đạt khoảng 8 triệu người.",
+    "expected_context": "Dân số của New York bùng nổ sau 200 năm (từ 79 nghìn lên 8 triệu) Ban đầu dân số chủ yếu tập trung ở quận Manhattan, sau đó dân số các quận khác tăng nhiều hơn Manhattan. Dân số vào năm 1800 chỉ khoảng 79 nghìn Các năm sau tăng lên 3.4 triệu rồi tiếp tục tăng lên 8 triệu"
+  },
+  {
+    "question": "Trong bài luận thảo luận về việc sinh viên đại học học thêm các môn khác ngoài chuyên ngành chính, luận điểm ủng hộ việc học nhiều môn là gì?",
+    "expected_answer": "Học nhiều môn giúp sinh viên mở rộng tầm nhìn (broaden horizons), đa dạng hóa kiến thức (diversify spectrum of knowledge), mang lại nhiều cơ hội việc làm phong phú và góc nhìn toàn diện cho tương lai.",
+    "expected_context": "Studying other subjects - Main idea: Learning a wide range of subjects helps students broaden their horizons and diversify their spectrum of knowledge. - Result: This leads to more abundant job opportunities and enables learners to gain a well-rounded perspective that can be applied to their future careers."
+  }
+]
