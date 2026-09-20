@@ -57,8 +57,29 @@ for message in st.session_state.messages:
                     st.text(content_preview)
                     st.divider()
 
+# Gợi ý câu hỏi mẫu nhanh
+st.markdown("##### 💡 Gợi ý câu hỏi mẫu (Click để hỏi nhanh):")
+col1, col2, col3 = st.columns(3)
+selected_prompt = None
+with col1:
+    if st.button("🌱 Mô hình TREE trong IELTS Speaking là gì?", use_container_width=True):
+        selected_prompt = "Mô hình TREE trong IELTS Speaking Part 3 là gì và các chữ cái đại diện cho điều gì?"
+    if st.button("📊 Task 1 & Task 2 cần phần bắt buộc nào?", use_container_width=True):
+        selected_prompt = "Trong IELTS Writing, hai phần bắt buộc phải có lần lượt đối với Task 1 và Task 2 là gì?"
+with col2:
+    if st.button("🧩 Mô hình L.I.M Framework gồm bước nào?", use_container_width=True):
+        selected_prompt = "Mô hình L.I.M Framework của The IELTS Workshop gồm những bước nào?"
+    if st.button("🎯 SAT & TOEFL có giá trị bao lâu?", use_container_width=True):
+        selected_prompt = "Kết quả bài thi SAT và TOEFL có giá trị trong bao lâu?"
+with col3:
+    if st.button("🎓 IELTS được cộng bao nhiêu điểm ĐH?", use_container_width=True):
+        selected_prompt = "Theo quy định của Bộ Giáo dục và Đào tạo, thí sinh có chứng chỉ IELTS được cộng tối đa bao nhiêu điểm khi xét tuyển đại học?"
+    if st.button("⛅ Thời tiết hôm nay thế nào? (Safe Refusal)", use_container_width=True):
+        selected_prompt = "Thời tiết hôm nay ở Hà Nội thế nào?"
+
 # Xử lý câu hỏi người dùng
-query = st.chat_input("Nhập câu hỏi về IELTS Writing hoặc kinh nghiệm học thi...")
+chat_input = st.chat_input("Nhập câu hỏi về IELTS Writing hoặc kinh nghiệm học thi...")
+query = selected_prompt or chat_input
 
 if query:
     st.session_state.messages.append({"role": "user", "content": query})
