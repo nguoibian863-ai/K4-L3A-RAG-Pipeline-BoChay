@@ -62,5 +62,5 @@ Mô tả tối đa hai quyết định mà bạn trực tiếp tham gia:
 
 Tôi xác nhận nội dung trên phản ánh đúng phần việc của mình và có thể giải thích hoặc chạy lại trong buổi demo.
 
-- Ngày: 2026-09-20
+- Ngày: 20-09-2026
 - Tên thành viên: Ngô Đức Chung
