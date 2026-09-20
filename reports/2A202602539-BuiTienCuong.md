@@ -1,26 +1,34 @@
 # Individual contribution report
 
+Mỗi thành viên copy template này thành:
+
 ```text
-reports/2A202602539-BuiTienCuong.md
+reports/<student-id>-<short-name>.md
 ```
+
+Giới hạn khuyến nghị: 1 trang, không chép lại README hoặc mô tả lý thuyết chung. Báo cáo không phải một bài pipeline cá nhân; mục đích là ghi nhận ownership và bằng chứng đóng góp trong sản phẩm nhóm.
 
 ---
 
 ## Thông tin
 
 - Họ và tên: Bùi Tiến Cường
-- Mã học viên: 2A202602539
-- Nhóm: Bochay
-- Repository/branch: cuong
+- Mã học viên:2A202602539
+- Nhóm:Bochay
+- Repository/branch:cuong
 
 ## Phần việc đã thực hiện
 
 | Module/deliverable | Việc tôi trực tiếp làm | File/commit/PR | Trạng thái |
 |---|---|---|---|
-| Task 9 — retrieval pipeline | Kết nối semantic search và lexical search; hợp nhất kết quả bằng RRF khi bật reranking; dùng điểm dense gốc để kích hoạt PageIndex fallback; giữ kết quả hybrid nếu fallback không trả kết quả hoặc phát sinh lỗi. | `src/task9_retrieval_pipeline.py`, commit `257a204` (`Complete retrieval generation flow`) | Done |
-| Task 10 — generation context preparation | Hoàn thiện reorder chunks theo kiểu đưa các chunk xen kẽ về đầu/cuối context và format context kèm title/source để chuẩn bị citation; bảo đảm thứ tự sources trùng với thứ tự Document trong context để citation không trỏ nhầm nguồn. | `src/task10_generation.py`, commit `257a204` và phần sửa citation ordering | Done |
+| | | | Done / Partial / Blocked |
+| Task 9 — retrieval pipeline | Kết nối semantic search và lexical search; hợp nhất kết quả bằng RRF khi bật reranking; dùng điểm dense gốc để kích hoạt PageIndex fallback; giữ kết quả hybrid nếu fallback không trả kết quả hoặc phát sinh lỗi. | [`src/task9_retrieval_pipeline.py`](../../src/task9_retrieval_pipeline.py); commit `257a204` (`Complete retrieval generation flow`) | Done |
+| Task 10 — generation context preparation | Hoàn thiện reorder chunks theo kiểu đưa các chunk xen kẽ về đầu/cuối context và format context kèm title/source để chuẩn bị citation; bảo đảm thứ tự sources trùng với thứ tự Document trong context để citation không trỏ nhầm nguồn. | [`src/task10_generation.py`](../../src/task10_generation.py); commit `257a204` và phần sửa citation ordering | Done |
+Chỉ kê khai công việc có thể đối chiếu bằng file, commit, pull request, test hoặc kết quả evaluation.
 
 ## Quyết định kỹ thuật quan trọng
+
+Mô tả tối đa hai quyết định mà bạn trực tiếp tham gia:
 
 1. **Quyết định:** Dùng điểm cosine gốc của dense search để quyết định có chạy PageIndex fallback hay không.
    **Lý do/evidence:** Contract yêu cầu không dùng RRF score để so sánh threshold vì hai loại điểm ở hai thang đo khác nhau.
@@ -45,5 +53,5 @@ reports/2A202602539-BuiTienCuong.md
 
 Tôi xác nhận nội dung trên phản ánh đúng phần việc của mình và có thể giải thích hoặc chạy lại trong buổi demo.
 
-- Ngày: 20/09/2026
+- Ngày:20/09/2026
 - Tên thành viên: Bùi Tiến Cường
