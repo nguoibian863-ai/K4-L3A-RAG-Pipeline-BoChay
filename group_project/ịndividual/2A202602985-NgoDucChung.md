@@ -1,12 +1,8 @@
 # Individual contribution report
 
-Mỗi thành viên copy template này thành:
-
 ```text
-reports/<student-id>-<short-name>.md
+reports/2A202602985-NgoDucChung.md
 ```
-
-Giới hạn khuyến nghị: 1 trang, không chép lại README hoặc mô tả lý thuyết chung. Báo cáo không phải một bài pipeline cá nhân; mục đích là ghi nhận ownership và bằng chứng đóng góp trong sản phẩm nhóm.
 
 ---
 
