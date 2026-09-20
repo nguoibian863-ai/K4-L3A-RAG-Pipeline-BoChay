@@ -1,12 +1,13 @@
 import streamlit as st
 from dotenv import load_dotenv
 
+from src.task10_generation import generate_with_citation
 
 load_dotenv()
 
 st.set_page_config(
-    page_title="RAG Chatbot",
-    page_icon="",
+    page_title="IELTS RAG Chatbot",
+    page_icon="📚",
     layout="wide",
 )
 
@@ -14,19 +15,50 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 with st.sidebar:
-    st.title("RAG Chatbot")
-    st.caption("Thay mô tả theo đề tài của nhóm")
-    top_k = st.slider("Số chunks", 3, 10, 5)
+    st.title("📚 IELTS RAG Assistant")
+    st.caption("Trợ lý tra cứu cẩm nang luyện thi IELTS Writing & tin tức giáo dục")
+    st.divider()
+    top_k = st.slider("Số lượng chunks retrieved (top_k)", min_value=1, max_value=10, value=5)
+    
+    st.markdown("### Thông tin Pipeline")
+    st.markdown("- **Embedding:** ONNX `all-MiniLM-L6-v2` (Local)")
+    st.markdown("- **Retrieval:** Hybrid (Dense + BM25 + RRF)")
+    st.markdown("- **Fallback:** PageIndex Vectorless")
+    st.markdown("- **LLM:** OpenAI `gpt-4o-mini`")
+    
+    st.divider()
+    if st.button("🗑️ Xóa lịch sử chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
 
-st.title("RAG Chatbot")
-st.caption("Thay tiêu đề và hướng dẫn sử dụng")
+st.title("🎓 IELTS Writing & Education RAG Chatbot")
+st.caption("Hệ thống chatbot trả lời câu hỏi dựa trên bộ tài liệu IELTS Writing và bài viết giáo dục, trích dẫn nguồn đối chiếu chính xác.")
 
+# Hiển thị lịch sử tin nhắn
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        # TODO: Hiển thị sources và retrieval score.
+        if "sources" in message and message["sources"]:
+            method = message.get("retrieval_source", "hybrid")
+            with st.expander(f"📌 Nguồn trích dẫn ({len(message['sources'])} tài liệu | Phương thức: {method})", expanded=False):
+                for i, src in enumerate(message["sources"], 1):
+                    meta = src.get("metadata", {})
+                    st.markdown(f"**[{i}] {meta.get('title', 'Tài liệu')}**")
+                    st.caption(
+                        f"📁 **Source:** `{meta.get('source', 'N/A')}` | "
+                        f"🎯 **Score:** `{src.get('score', 0):.4f}` | "
+                        f"⚙️ **Method:** `{src.get('retrieval_method', 'N/A')}`"
+                    )
+                    if meta.get("url"):
+                        st.markdown(f"🔗 [Xem bài viết gốc]({meta['url']})")
+                    content_preview = src.get("content", "").strip()
+                    if len(content_preview) > 300:
+                        content_preview = content_preview[:300] + "..."
+                    st.text(content_preview)
+                    st.divider()
 
-query = st.chat_input("Nhập câu hỏi...")
+# Xử lý câu hỏi người dùng
+query = st.chat_input("Nhập câu hỏi về IELTS Writing hoặc kinh nghiệm học thi...")
 
 if query:
     st.session_state.messages.append({"role": "user", "content": query})
@@ -35,11 +67,35 @@ if query:
         st.markdown(query)
 
     with st.chat_message("assistant"):
-        # TODO: Gọi generate_with_citation(query, top_k).
-        answer = "TODO: Itegration RAG Pipeline hêre"
-        sources = []
+        with st.spinner("Đang tìm kiếm tài liệu và tổng hợp câu trả lời có trích dẫn..."):
+            result = generate_with_citation(query, top_k=top_k)
+            answer = result["answer"]
+            sources = result.get("sources", [])
+            retrieval_source = result.get("retrieval_source", "none")
+
         st.markdown(answer)
 
-        # TODO: Hiển thị sources và citation.
+        if sources:
+            with st.expander(f"📌 Nguồn trích dẫn ({len(sources)} tài liệu | Phương thức: {retrieval_source})", expanded=True):
+                for i, src in enumerate(sources, 1):
+                    meta = src.get("metadata", {})
+                    st.markdown(f"**[{i}] {meta.get('title', 'Tài liệu')}**")
+                    st.caption(
+                        f"📁 **Source:** `{meta.get('source', 'N/A')}` | "
+                        f"🎯 **Score:** `{src.get('score', 0):.4f}` | "
+                        f"⚙️ **Method:** `{src.get('retrieval_method', 'N/A')}`"
+                    )
+                    if meta.get("url"):
+                        st.markdown(f"🔗 [Xem bài viết gốc]({meta['url']})")
+                    content_preview = src.get("content", "").strip()
+                    if len(content_preview) > 300:
+                        content_preview = content_preview[:300] + "..."
+                    st.text(content_preview)
+                    st.divider()
 
-    # TODO: Lưu answer và sources vào session state.
+    st.session_state.messages.append({
+        "role": "assistant",
+        "content": answer,
+        "sources": sources,
+        "retrieval_source": retrieval_source,
+    })
