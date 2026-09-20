@@ -12,7 +12,7 @@
 | Corpus version/commit              | TODO  |
 | Golden dataset size                | TODO  |
 | `top_k`                            | TODO  |
-| Fallback threshold and calibration | TODO  |
+| Fallback threshold and calibration | Ngưỡng 0.40. Calibrate: In-domain ('What are the 4 assessment criteria for IELTS Writing Task 1?' -> dense score ~0.72 >= 0.40 dùng hybrid), Out-of-domain ('Công thức nấu phở bò Hà Nội truyền thống' -> dense score ~0.24 < 0.40 kích hoạt fallback). Ngưỡng 0.40 đảm bảo phân tách rõ ràng mà không so sánh với điểm RRF. |
 
 ## Configurations
 
